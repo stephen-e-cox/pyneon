@@ -28,7 +28,7 @@ def cross_section_calc():
 
     for i in cross_sections:
         cross_section_interp_function[i] = interp.interp1d(x_alpha_energies[i],cross_sections[i])
-        x_alpha_energies_interp[i] = np.linspace(min(x_alpha_energies[i]), max(x_alpha_energies[i]), num=100, endpoint=True)
+        x_alpha_energies_interp[i] = np.linspace(min(x_alpha_energies[i]), max(x_alpha_energies[i]), num=1000, endpoint=True)
         cross_sections_interp[i] = cross_section_interp_function[i](x_alpha_energies_interp[i])
 
     return x_alpha_energies, cross_sections, x_alpha_energies_interp, cross_sections_interp
@@ -51,6 +51,8 @@ def xsection_plot(target):
     x_alpha_energies, cross_sections, x_alpha_energies_interp, cross_sections_interp = cross_section_calc()
     fig = figure(FigureClass=YieldFigure, figtitle='Cross Section')
     ax = fig.add_subplot(111)
+    ax.set_xlabel('Alpha Energy (MeV)')
+    ax.set_ylabel('Cross Section (mbarn)')
     ax.plot(x_alpha_energies[target], cross_sections[target], 'o')
     ax.plot(x_alpha_energies_interp[target],cross_sections_interp[target])
     show()

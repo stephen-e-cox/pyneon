@@ -1,6 +1,6 @@
 import pandas as pd
-from cross_section import xsection
-from nucleogenic.stopping_power import stoppingpower
+from nucleogenic.cross_section import xsection
+from nucleogenic.stopping_power import stopping_power_func
 import numpy as np
 from scipy.integrate import cumtrapz
 
@@ -13,13 +13,13 @@ def yieldcalc(mineral, target, weight_fraction_species, isotopic_fraction_specie
     cross_section = pd.DataFrame({'Energy': cross_section[0], 'CrossSection': cross_section[1]})
     cross_section = cross_section.set_index('Energy').squeeze()
 
-    stopping_power = stoppingpower(mineral, min_energy, max_energy)
+    _, _, stoppingpower = stopping_power_func(mineral, min_energy, max_energy)
 
-    common_energies = cross_section.align(stopping_power, join='inner')
+    common_energies = cross_section.align(stoppingpower, join='inner')
     cross_section = common_energies[0]
-    stopping_power = common_energies[1]
+    stoppingpower = common_energies[1]
 
-    quotient = cross_section/stopping_power
+    quotient = cross_section/stoppingpower
 
     integral = cumtrapz(quotient.values, cross_section.index.astype(np.float64))
 
@@ -36,4 +36,4 @@ def yieldcalc(mineral, target, weight_fraction_species, isotopic_fraction_specie
 
     scaled_yield = integral.multiply(prefactor)
 
-    return scaled_yield
+    return scaled_yield, min_energy, max_energy
