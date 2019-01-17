@@ -84,16 +84,16 @@ class DeconvolveNeonIsotopes:
         comp2_neon_21_norm = comp2_neon_21_frac/allcomps_neon_21
         comp3_neon_21_norm = comp3_neon_21_frac/allcomps_neon_21
 
-        comp1_neon_22_sig = self.neon_22*comp1_neon_22_norm
-        comp2_neon_22_sig = self.neon_22*comp2_neon_22_norm
-        comp3_neon_22_sig = self.neon_22*comp3_neon_22_norm
+        comp1_neon_22_sig = self.neon_22*comp1_neon_22_norm[0]
+        comp2_neon_22_sig = self.neon_22*comp2_neon_22_norm[0]
+        comp3_neon_22_sig = self.neon_22*comp3_neon_22_norm[0]
 
-        comp1_neon_21_sig = self.neon_21*comp1_neon_21_norm
-        comp2_neon_21_sig = self.neon_21*comp2_neon_21_norm
-        comp3_neon_21_sig = self.neon_21*comp3_neon_21_norm
+        comp1_neon_21_sig = self.neon_21*comp1_neon_21_norm[0]
+        comp2_neon_21_sig = self.neon_21*comp2_neon_21_norm[0]
+        comp3_neon_21_sig = self.neon_21*comp3_neon_21_norm[0]
 
-        comp1_neon_20_sig = self.neon_20*comp1_neon_20_norm
-        comp2_neon_20_sig = self.neon_20*comp2_neon_20_norm
-        comp3_neon_20_sig = self.neon_20*comp3_neon_20_norm
+        comp1_neon_20_sig = self.neon_20*comp1_neon_20_norm[0]
+        comp2_neon_20_sig = self.neon_20*comp2_neon_20_norm[0]
+        comp3_neon_20_sig = self.neon_20*comp3_neon_20_norm[0]
 
         return comp1_neon_20_sig, comp1_neon_21_sig, comp1_neon_22_sig, comp2_neon_20_sig, comp2_neon_21_sig, comp2_neon_22_sig, comp3_neon_20_sig, comp3_neon_21_sig, comp3_neon_22_sig
