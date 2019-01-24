@@ -35,7 +35,6 @@ class Deconvolve(HasTraits):
                        Item(name='system', editor=CheckListEditor(values=['Nucleogenic/Cosmogenic/Air', 'Nucleogenic/Mantle/Air', 'Cosmogenic/Mantle/Air'])),
                        Item(name='mineral', editor=CheckListEditor(values=['quartz', 'pyroxene'])),
                        Item('calc', name=''),
-                       Item('click_counter'),
                        label='Neon Isotope Deconvolution',
                        show_border=True))
 
