@@ -19,8 +19,6 @@ class Deconvolve(HasTraits):
     system = 'Nucleogenic/Cosmogenic/Air'
     mineral = 'quartz'
 
-    click_counter = Int
-
     def _calc_fired(self):
         self.click_counter += 1
         ne_deconvoluter = DeconvolveNeonIsotopes(self.Neon_20_Measured, self.Neon_21_Measured, self.Neon_22_Measured, self.system, self.mineral)
