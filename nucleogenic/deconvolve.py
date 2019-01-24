@@ -8,92 +8,109 @@ import numpy as np
 
 class DeconvolveNeonIsotopes:
 
-    def __init__(self, neon_20_in, neon_21_in, neon_22_in):
+    def __init__(self, neon_20_in, neon_21_in, neon_22_in, system, mineral):
         self.neon_20 = neon_20_in
         self.neon_21 = neon_21_in
         self.neon_22 = neon_22_in
+        self.system = system
+        self.mineral = mineral
 
     def deconv_calculate(self):
 
+        print(self.system)
+        print("Input: (", round(self.neon_20, 5), " Ne20) (", round(self.neon_21, 5), " Ne21) (", round(self.neon_22, 5),
+              " Ne22)")
+
+        comp = []
+        comp_name = []
+        comp_option = []
+        neon_20_22_comp = []
+        neon_21_22_comp = []
+        neon_22_frac = []
+        neon_20_frac = []
+        neon_21_frac = []
+        neon_22_norm = []
+        neon_20_norm = []
+        neon_21_norm = []
+        neon_22_sig = []
+        neon_20_sig = []
+        neon_21_sig = []
+        comp_results = []
+
+        print(self.system)
+
+        if self.system == 'Nucleogenic/Cosmogenic/Air':
+            comp.append(0)
+            comp.append(1)
+            comp.append(2)
+            comp_name.append('Nucleogenic')
+            comp_name.append('Cosmogenic')
+            comp_name.append('Air')
+
+        elif self.system == 'Nucleogenic/Mantle/Air':
+            comp.append(0)
+            comp.append(3)
+            comp.append(2)
+            comp_name.append('Nucleogenic')
+            comp_name.append('Mantle')
+            comp_name.append('Air')
+
+        else:
+            comp.append(1)
+            comp.append(3)
+            comp.append(2)
+            comp_name.append('Cosmogenic')
+            comp_name.append('Mantle')
+            comp_name.append('Air')
+
+        # nucleogenic
+        comp_option.append([.99999, .000005, .000005])
+
+        # cosmogenic (Niedermann 2002)
+
+        if self.mineral == 'quartz':
+            # quartz
+            comp_option.append([0.4582741396, 0.3666193117, 0.1751065487])
+        else:
+            # pyroxene
+            comp_option.append([0.301659125188537, 0.324283559577677, 0.374057315233786])
+
         # air
-        # neon_20_comp1 = .9048
-        # neon_21_comp1 = .0027
-        # neon_22_comp1 = .0925
+        comp_option.append([.9048, .0027, .0925])
 
-        neon_20_comp1 = 0.8974400683
-        neon_21_comp1 = 0.002762699631
-        neon_22_comp1 = 0.09979723206
+        for i in range(3):
+            comp[i] = comp_option[comp[i]]
+            neon_20_22_comp.append(comp[i][0] / comp[i][2])
+            neon_21_22_comp.append(comp[i][1] / comp[i][2])
 
-        neon_20_22_comp1 = neon_20_comp1/neon_22_comp1
-        neon_21_22_comp1 = neon_21_comp1/neon_22_comp1
-
-        # cosmo (Niedermann 2002)
-        # quartz
-        # neon_20_comp2 = 0.4582741396
-        # neon_21_comp2 = 0.3666193117
-        # neon_22_comp2 = 0.1751065487
-
-        # pyroxene
-        neon_20_comp2 = 0.301659125188537
-        neon_21_comp2 = 0.324283559577677
-        neon_22_comp2 = 0.374057315233786
-
-        neon_20_22_comp2 = neon_20_comp2/neon_22_comp2
-        neon_21_22_comp2 = neon_21_comp2/neon_22_comp2
-
-        # nucl
-        neon_20_comp3 = .99999
-        neon_21_comp3 = .000005
-        neon_22_comp3 = .000005
-
-        neon_20_22_comp3 = neon_20_comp3/neon_22_comp3
-        neon_21_22_comp3 = neon_21_comp3/neon_22_comp3
-
-        neon_20_22 = self.neon_20/self.neon_22
-        neon_21_22 = self.neon_21/self.neon_22
+        neon_20_22 = self.neon_20 / self.neon_22
+        neon_21_22 = self.neon_21 / self.neon_22
 
         data_matrix = np.array([[neon_20_22], [neon_21_22], [1]])
 
-        model_matrix = np.array([[neon_20_22_comp1, neon_20_22_comp2, neon_20_22_comp3], [neon_21_22_comp1, neon_21_22_comp2,
-                                                                                          neon_21_22_comp3], [1, 1, 1]])
+        model_matrix = np.array(
+            [[neon_20_22_comp[0], neon_20_22_comp[1], neon_20_22_comp[2]], [neon_21_22_comp[0], neon_21_22_comp[1],
+                                                                            neon_21_22_comp[2]], [1, 1, 1]])
         inv_model = np.linalg.inv(model_matrix)
 
         results_matrix = np.matmul(inv_model, data_matrix)
 
-        comp1_neon_22_frac = results_matrix[0]
-        comp2_neon_22_frac = results_matrix[1]
-        comp3_neon_22_frac = results_matrix[2]
-        allcomps_neon_22 = comp1_neon_22_frac + comp2_neon_22_frac + comp3_neon_22_frac
-        comp1_neon_22_norm = comp1_neon_22_frac/allcomps_neon_22
-        comp2_neon_22_norm = comp2_neon_22_frac/allcomps_neon_22
-        comp3_neon_22_norm = comp3_neon_22_frac/allcomps_neon_22
+        for i in range(3):
+            neon_22_frac.append(results_matrix[i])
+            neon_22_norm.append(results_matrix[i] / sum(results_matrix))
+            neon_20_frac.append(neon_22_frac[i] * neon_20_22_comp[i])
+            neon_21_frac.append(neon_22_frac[i] * neon_21_22_comp[i])
 
-        comp1_neon_20_frac = comp1_neon_22_frac*neon_20_22_comp1
-        comp2_neon_20_frac = comp2_neon_22_frac*neon_20_22_comp2
-        comp3_neon_20_frac = comp3_neon_22_frac*neon_20_22_comp3
-        allcomps_neon_20 = comp1_neon_20_frac + comp2_neon_20_frac + comp3_neon_20_frac
-        comp1_neon_20_norm = comp1_neon_20_frac/allcomps_neon_20
-        comp2_neon_20_norm = comp2_neon_20_frac/allcomps_neon_20
-        comp3_neon_20_norm = comp3_neon_20_frac/allcomps_neon_20
+        for i in range(3):
+            neon_20_norm.append(neon_20_frac[i] / sum(neon_20_frac))
+            neon_21_norm.append(neon_21_frac[i] / sum(neon_21_frac))
 
-        comp1_neon_21_frac = comp1_neon_22_frac*neon_21_22_comp1
-        comp2_neon_21_frac = comp2_neon_22_frac*neon_21_22_comp2
-        comp3_neon_21_frac = comp3_neon_22_frac*neon_21_22_comp3
-        allcomps_neon_21 = comp1_neon_21_frac + comp2_neon_21_frac + comp3_neon_21_frac
-        comp1_neon_21_norm = comp1_neon_21_frac/allcomps_neon_21
-        comp2_neon_21_norm = comp2_neon_21_frac/allcomps_neon_21
-        comp3_neon_21_norm = comp3_neon_21_frac/allcomps_neon_21
+            neon_22_sig.append(self.neon_22 * neon_22_norm[i])
+            neon_20_sig.append(self.neon_20 * neon_20_norm[i])
+            neon_21_sig.append(self.neon_21 * neon_21_norm[i])
 
-        comp1_neon_22_sig = self.neon_22*comp1_neon_22_norm[0]
-        comp2_neon_22_sig = self.neon_22*comp2_neon_22_norm[0]
-        comp3_neon_22_sig = self.neon_22*comp3_neon_22_norm[0]
+            # print(comp_name[i], ": (", round(neon_20_sig[i][0], 5), " Ne20) (", round(neon_21_sig[i][0], 5),
+            #           " Ne21) (", round(neon_22_sig[i][0], 5), " Ne22)")
+            comp_results.extend([neon_20_sig[i][0], neon_21_sig[i][0], neon_22_sig[i][0]])
 
-        comp1_neon_21_sig = self.neon_21*comp1_neon_21_norm[0]
-        comp2_neon_21_sig = self.neon_21*comp2_neon_21_norm[0]
-        comp3_neon_21_sig = self.neon_21*comp3_neon_21_norm[0]
-
-        comp1_neon_20_sig = self.neon_20*comp1_neon_20_norm[0]
-        comp2_neon_20_sig = self.neon_20*comp2_neon_20_norm[0]
-        comp3_neon_20_sig = self.neon_20*comp3_neon_20_norm[0]
-
-        return comp1_neon_20_sig, comp1_neon_21_sig, comp1_neon_22_sig, comp2_neon_20_sig, comp2_neon_21_sig, comp2_neon_22_sig, comp3_neon_20_sig, comp3_neon_21_sig, comp3_neon_22_sig
+        return comp_results
