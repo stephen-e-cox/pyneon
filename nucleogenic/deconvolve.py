@@ -9,17 +9,17 @@ import numpy as np
 class DeconvolveNeonIsotopes:
 
     def __init__(self, neon_20_in, neon_21_in, neon_22_in, system, mineral):
-        self.neon_20 = neon_20_in
-        self.neon_21 = neon_21_in
-        self.neon_22 = neon_22_in
+        self.neon_20 = float(neon_20_in)
+        self.neon_21 = float(neon_21_in)
+        self.neon_22 = float(neon_22_in)
         self.system = system
         self.mineral = mineral
 
     def deconv_calculate(self):
 
-        print(self.system)
-        print("Input: (", round(self.neon_20, 5), " Ne20) (", round(self.neon_21, 5), " Ne21) (", round(self.neon_22, 5),
-              " Ne22)")
+        # print(self.system)
+        # print("Input: (", round(self.neon_20, 5), " Ne20) (", round(self.neon_21, 5), " Ne21) (", round(self.neon_22, 5),
+        #       " Ne22)")
 
         comp = []
         comp_name = []
@@ -64,7 +64,7 @@ class DeconvolveNeonIsotopes:
             comp_name.append('Air')
 
         # nucleogenic
-        comp_option.append([.99999, .000005, .000005])
+        comp_option.append([.000005, .99999, .000005])
 
         # cosmogenic (Niedermann 2002)
 
@@ -77,6 +77,9 @@ class DeconvolveNeonIsotopes:
 
         # air
         comp_option.append([.9048, .0027, .0925])
+
+        # mantle (Peron et al 2016)
+        comp_option.append([.9259, .0024, .0717])
 
         for i in range(3):
             comp[i] = comp_option[comp[i]]

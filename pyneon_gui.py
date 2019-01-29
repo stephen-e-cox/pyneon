@@ -1,5 +1,5 @@
 from traits.api import HasTraits, Str, Int, Float, Button
-from traitsui.api import View, Item, Group, CheckListEditor, HGroup
+from traitsui.api import View, Item, Group, CheckListEditor, HGroup, VGroup
 # from traitsui.menu import OKButton, CancelButton
 # import traitsui
 from nucleogenic.deconvolve import DeconvolveNeonIsotopes
@@ -56,12 +56,13 @@ class Deconvolve(HasTraits):
                        Item(name='system', editor=CheckListEditor(values=['Nucleogenic/Cosmogenic/Air', 'Nucleogenic/Mantle/Air', 'Cosmogenic/Mantle/Air'])),
                        Item(name='mineral', editor=CheckListEditor(values=['quartz', 'pyroxene'])),
                        Item('calc', name=''),
-                       Item(name='comp1'),
+                       VGroup(Item(name='comp1'),
                        HGroup(Item(name='comp1_20'), Item(name='comp1_21'), Item(name='comp1_22')),
                        Item(name='comp2'),
                        HGroup(Item(name='comp2_20'), Item(name='comp2_21'), Item(name='comp2_22')),
                        Item(name='comp3'),
                        HGroup(Item(name='comp3_20'), Item(name='comp3_21'), Item(name='comp3_22')),
+                       label='Results', show_border=True),
                        label='Neon Isotope Deconvolution',
                        show_border=True))
 
