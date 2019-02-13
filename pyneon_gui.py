@@ -3,7 +3,7 @@ from traitsui.api import View, Item, Group, CheckListEditor, HGroup, VGroup
 # from traitsui.menu import OKButton, CancelButton
 # import traitsui
 from nucleogenic.deconvolve import DeconvolveNeonIsotopes
-
+from neon_ternary import plot_tern
 
 class Deconvolve(HasTraits):
 
@@ -48,13 +48,25 @@ class Deconvolve(HasTraits):
         self.comp3_21 = round(ne_results[7], 5)
         self.comp3_22 = round(ne_results[8], 5)
 
+    def _plot_data_fired(self):
+        neon_20_frac = float(self.Neon_20_Measured)
+        neon_21_frac = float(self.Neon_21_Measured)
+        neon_22_frac = float(self.Neon_22_Measured)
+        neon_sum = neon_20_frac + neon_21_frac + neon_22_frac
+        neon_20_perc = 100*neon_20_frac/neon_sum
+        neon_21_perc = 100*neon_21_frac/neon_sum
+        neon_22_perc = 100*neon_22_frac/neon_sum
+        plot_tern([neon_20_perc, neon_21_perc, neon_22_perc])
+
     calc = Button("Calculate")
+    plot_data = Button("Plot")
 
     view1 = View(Group(Item(name='Neon_20_Measured'),
                        Item(name='Neon_21_Measured'),
                        Item(name='Neon_22_Measured'),
                        Item(name='system', editor=CheckListEditor(values=['Nucleogenic/Cosmogenic/Air', 'Nucleogenic/Mantle/Air', 'Cosmogenic/Mantle/Air'])),
                        Item(name='mineral', editor=CheckListEditor(values=['quartz', 'pyroxene'])),
+                       Item('plot_data', name=''),
                        Item('calc', name=''),
                        VGroup(Item(name='comp1'),
                        HGroup(Item(name='comp1_20'), Item(name='comp1_21'), Item(name='comp1_22')),

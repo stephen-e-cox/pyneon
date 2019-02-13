@@ -66,14 +66,14 @@ class DeconvolveNeonIsotopes:
         # nucleogenic
         comp_option.append([.000005, .99999, .000005])
 
-        # cosmogenic (Niedermann 2002)
+        # cosmogenic (Schaefer et al. 1999)
 
         if self.mineral == 'quartz':
             # quartz
-            comp_option.append([0.4582741396, 0.3666193117, 0.1751065487])
+            comp_option.append([0.355871886, 0.284697509, 0.359430605])
         else:
             # pyroxene
-            comp_option.append([0.301659125188537, 0.324283559577677, 0.374057315233786])
+            comp_option.append([0.296735905, 0.326409496, 0.376854599])
 
         # air
         comp_option.append([.9048, .0027, .0925])
