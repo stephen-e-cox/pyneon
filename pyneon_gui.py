@@ -36,9 +36,13 @@ class Deconvolve(HasTraits):
     Nucleogenic_neon_21_mol = Float
     Nucleogenic_neon_21_ncc = Float
     Nucleogenic_neon_21_Mat = Float
+    Cosmogenic_neon_21_mol = Float
+    Cosmogenic_neon_21_ncc = Float
+    Cosmogenic_neon_21_Mat = Float
     Uranium_ppm = Float
     Thorium_ppm = Float
-    Age = Float
+    Nucl_Age = Float
+    Cos_Age = Float
 
     def _calc_fired(self):
         ne_deconvoluter = DeconvolveNeonIsotopes(self.Neon_20_Measured, self.Neon_21_Measured, self.Neon_22_Measured, self.system, self.mineral)
@@ -102,27 +106,28 @@ class Deconvolve(HasTraits):
                               Item('transfer', label='Transfer to Age Calculator')),
                        label='Neon Isotope Deconvolution',
                        show_border=True),
-                    VGroup(Item(name='Nucleogenic_neon_21_mol', label='Nucleogenic neon-21 (mol/g)'),
-                           Item(name='Nucleogenic_neon_21_ncc', label='Nucleogenic neon-21 (ncc/g)'),
-                           Item(name='Nucleogenic_neon_21_Mat', label='Nucleogenic neon-21 (Mat/g)'),
-                           Item(name='Uranium_ppm', label='Uranium (ppm)'),
-                           Item(name='Thorium_ppm', label='Thorium (ppm)'),
-                           Item('date_nuc', name='', show_label=False),
-                           VGroup(
-                               Item(name='Age'),
-                               label='Results', show_border=True),
-                           label='Nucleogenic Neon Age Calculation',
-                           show_border=True),
-                    VGroup(Item(name='Cosmogenic_neon_21_mol', label='Cosmogenic neon-21 (mol/g)'),
-                           Item(name='Cosmogenic_neon_21_ncc', label='Cosmogenic neon-21 (ncc/g)'),
-                           Item(name='Cosmogenic_neon_21_Mat', label='Cosmogenic neon-21 (Mat/g)'),
-                           Item('date_cos', name='', show_label=False),
-                           VGroup(
-                               Item(name='Age'),
-                               label='Results', show_border=True),
-                           label='Nucleogenic Neon Age Calculation',
-                           show_border=True)
-
+                       VGroup(
+                            VGroup(Item(name='Nucleogenic_neon_21_mol', label='Nucleogenic neon-21 (mol/g)'),
+                                   Item(name='Nucleogenic_neon_21_ncc', label='Nucleogenic neon-21 (ncc/g)'),
+                                   Item(name='Nucleogenic_neon_21_Mat', label='Nucleogenic neon-21 (Mat/g)'),
+                                   Item(name='Uranium_ppm', label='Uranium (ppm)'),
+                                   Item(name='Thorium_ppm', label='Thorium (ppm)'),
+                                   Item('date_nuc', name='', show_label=False),
+                                   VGroup(
+                                       Item(name='Nucl_Age', label='Age'),
+                                       label='Results', show_border=True),
+                                   label='Nucleogenic Neon Age Calculation',
+                                   show_border=True),
+                            VGroup(Item(name='Cosmogenic_neon_21_mol', label='Cosmogenic neon-21 (mol/g)'),
+                                   Item(name='Cosmogenic_neon_21_ncc', label='Cosmogenic neon-21 (ncc/g)'),
+                                   Item(name='Cosmogenic_neon_21_Mat', label='Cosmogenic neon-21 (Mat/g)'),
+                                   Item('date_cos', name='', show_label=False),
+                                   VGroup(
+                                       Item(name='Cos_Age', label='Age'),
+                                       label='Results', show_border=True),
+                                   label='Cosmogenic Neon Age Calculation',
+                                   show_border=True)
+                       )
                     )
                 )
 
