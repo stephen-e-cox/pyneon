@@ -31,6 +31,15 @@ class Deconvolve(HasTraits):
     system = 'Nucleogenic/Cosmogenic/Air'
     mineral = 'quartz'
 
+    Mass = 1
+
+    Nucleogenic_neon_21_mol = Float
+    Nucleogenic_neon_21_ncc = Float
+    Nucleogenic_neon_21_Mat = Float
+    Uranium_ppm = Float
+    Thorium_ppm = Float
+    Age = Float
+
     def _calc_fired(self):
         ne_deconvoluter = DeconvolveNeonIsotopes(self.Neon_20_Measured, self.Neon_21_Measured, self.Neon_22_Measured, self.system, self.mineral)
         ne_results = ne_deconvoluter.deconv_calculate()
@@ -58,16 +67,30 @@ class Deconvolve(HasTraits):
         neon_22_perc = 100*neon_22_frac/neon_sum
         plot_tern([neon_20_perc, neon_21_perc, neon_22_perc])
 
-    calc = Button("Calculate")
-    plot_data = Button("Plot")
+    def _transfer_fired(self):
+        self.Mass = float(self.Mass)
+        for i in (self.comp1, self.comp2, self.comp3):
+            if i == 'Nucleogenic':
+                self.Nucleogenic_neon_21_mol = self.comp1_21/self.Mass
+            if i == 'Cosmogenic':
+                self.Cosmogenic_neon_21_mol = self.comp1_21/self.Mass
 
-    view1 = View(Group(Item(name='Neon_20_Measured'),
+    calc = Button("Calculate Deconvolution")
+    plot_data = Button("Plot")
+    transfer = Button("Transfer")
+    date_nuc = Button("Calculate Age")
+    date_cos = Button("Calculate Age")
+
+    view1 = View(HGroup(
+                    VGroup(Item(name='Neon_20_Measured'),
                        Item(name='Neon_21_Measured'),
                        Item(name='Neon_22_Measured'),
-                       Item(name='system', editor=CheckListEditor(values=['Nucleogenic/Cosmogenic/Air', 'Nucleogenic/Mantle/Air', 'Cosmogenic/Mantle/Air'])),
+                       Item(name='system', editor=CheckListEditor(values=['Nucleogenic/Cosmogenic/Air',
+                                                                          'Nucleogenic/Mantle/Air',
+                                                                          'Cosmogenic/Mantle/Air'])),
                        Item(name='mineral', editor=CheckListEditor(values=['quartz', 'pyroxene'])),
-                       Item('plot_data', name=''),
-                       Item('calc', name=''),
+                       Item('plot_data', name='', show_label=False),
+                       Item('calc', name='', show_label=False),
                        VGroup(Item(name='comp1'),
                        HGroup(Item(name='comp1_20'), Item(name='comp1_21'), Item(name='comp1_22')),
                        Item(name='comp2'),
@@ -75,8 +98,33 @@ class Deconvolve(HasTraits):
                        Item(name='comp3'),
                        HGroup(Item(name='comp3_20'), Item(name='comp3_21'), Item(name='comp3_22')),
                        label='Results', show_border=True),
+                       HGroup(Item(name='Mass', label='Mass (mg)'),
+                              Item('transfer', label='Transfer to Age Calculator')),
                        label='Neon Isotope Deconvolution',
-                       show_border=True))
+                       show_border=True),
+                    VGroup(Item(name='Nucleogenic_neon_21_mol', label='Nucleogenic neon-21 (mol/g)'),
+                           Item(name='Nucleogenic_neon_21_ncc', label='Nucleogenic neon-21 (ncc/g)'),
+                           Item(name='Nucleogenic_neon_21_Mat', label='Nucleogenic neon-21 (Mat/g)'),
+                           Item(name='Uranium_ppm', label='Uranium (ppm)'),
+                           Item(name='Thorium_ppm', label='Thorium (ppm)'),
+                           Item('date_nuc', name='', show_label=False),
+                           VGroup(
+                               Item(name='Age'),
+                               label='Results', show_border=True),
+                           label='Nucleogenic Neon Age Calculation',
+                           show_border=True),
+                    VGroup(Item(name='Cosmogenic_neon_21_mol', label='Cosmogenic neon-21 (mol/g)'),
+                           Item(name='Cosmogenic_neon_21_ncc', label='Cosmogenic neon-21 (ncc/g)'),
+                           Item(name='Cosmogenic_neon_21_Mat', label='Cosmogenic neon-21 (Mat/g)'),
+                           Item('date_cos', name='', show_label=False),
+                           VGroup(
+                               Item(name='Age'),
+                               label='Results', show_border=True),
+                           label='Nucleogenic Neon Age Calculation',
+                           show_border=True)
+
+                    )
+                )
 
 
 launch = Deconvolve()

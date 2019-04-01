@@ -47,6 +47,15 @@ def plot_tern(data_point):
 
     points = []
     points.append(data_point)
+    points.append([84.79769871, 2.695266087, 12.50703521])
+    points.append([89.37663091, 0.376920847, 10.24644825])
+    points.append([83.08293978, 3.729719571, 13.18734065])
+    points.append([89.44536548, 0.354278712, 10.20035581])
+    points.append([80.96525495, 4.904465607, 14.13027944])
+    points.append([89.69828162, 0.355471802, 9.946246576])
+    points.append([73.35719139, 8.5538114, 18.08899721])
+    points.append([88.97094597, 0.457847705, 10.57120633])
+    points.append([79.32092083, 5.552525018, 15.12655415])
     tax.scatter(points, marker='s', color='black', label="Data")
 
     tax.legend()
